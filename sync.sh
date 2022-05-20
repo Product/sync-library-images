@@ -47,7 +47,9 @@ diff_images() {
 skopeo_copy() {
     if skopeo copy --insecure-policy --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2; then
         echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
+        echo "----copy 01---"
         echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
+        echo "----copy 02---"
         return 0
     else
         echo -e "$RED_COL Sync $1 failed $NORMAL_CO"
@@ -60,13 +62,16 @@ sync_images() {
     IFS=$'\n'
     CURRENT_NUM=0
     TOTAL_NUMS=$(echo -e ${IMAGES} | tr ' ' '\n' | wc -l)
+    echo "----sync 01---"
     for image in ${IMAGES}; do
+        echo "----sync 02---"
         let CURRENT_NUM=${CURRENT_NUM}+1
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
 
         if skopeo_copy docker.io/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tags}; then
+            echo "----sync 03---"
             for tag in $(echo ${image} | cut -d ':' -f2 | tr ',' '\n'); do
                 skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}${name}:${tag}
             done
