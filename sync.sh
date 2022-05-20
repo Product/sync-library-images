@@ -29,7 +29,7 @@ diff_images() {
     git fetch --all
     CURRENT_COMMIT=$(git log -1 upstream/master --format='%H')
     echo ${CURRENT_COMMIT}
-    LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1  )
+    LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1 || true )
     echo "--ok1--"
     : ${LAST_TAG:=$(git log upstream/master --format='%H' | tail -n1)}
     IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
@@ -44,7 +44,7 @@ diff_images() {
 }
 
 skopeo_copy() {
-    echo "---starting copy---"
+    echo "---starting copy- from $1 --to $2"
     if skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2; then
         echo "---copy---"
        
@@ -64,10 +64,10 @@ sync_images() {
     TOTAL_NUMS=$(echo -e ${IMAGES} | tr ' ' '\n' | wc -l)
     for image in ${IMAGES}; do
         echo ${image}
-        #if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
-        #    echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
-        #    continue
-        #fi
+        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
+            continue
+        fi
         let CURRENT_NUM=${CURRENT_NUM}+1
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
