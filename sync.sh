@@ -28,8 +28,11 @@ diff_images() {
     git fetch --tag
     git fetch --all
     CURRENT_COMMIT=$(git log -1 upstream/master --format='%H')
+    echo ${CURRENT_COMMIT}
     echo "--ok1--"
     LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1)
+    echo ${LAST_TAG}
+    echo "--ok1-1--"
     : ${LAST_TAG:=$(git log upstream/master --format='%H' | tail -n1)}
     echo "--ok2--"
     IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
