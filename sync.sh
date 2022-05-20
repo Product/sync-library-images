@@ -64,14 +64,15 @@ sync_images() {
     TOTAL_NUMS=$(echo -e ${IMAGES} | tr ' ' '\n' | wc -l)
     for image in ${IMAGES}; do
         echo ${image}
-        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
-            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
-            continue
-        fi
+
         let CURRENT_NUM=${CURRENT_NUM}+1
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
+        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
+            continue
+        fi
         echo "--tags start--"
         echo ${name}:${tags}
         echo "--tags end --"
