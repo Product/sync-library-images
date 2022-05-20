@@ -65,14 +65,18 @@ sync_images() {
     echo "----sync 01---"
     for image in ${IMAGES}; do
         echo "----sync 02---"
+        echo ${image}
         let CURRENT_NUM=${CURRENT_NUM}+1
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
-
+        echo "--tags start--"
+        echo ${name}:${tags}
+        echo "--tags end --"
         if skopeo_copy docker.io/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tags}; then
             echo "----sync 03---"
             for tag in $(echo ${image} | cut -d ':' -f2 | tr ',' '\n'); do
+                echo "+++++++++++copy start------------"
                 skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}${name}:${tag}
             done
         fi
