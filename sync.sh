@@ -77,7 +77,7 @@ sync_images() {
             echo "----sync 03---"
             for tag in $(echo ${image} | cut -d ':' -f2 | tr ',' '\n'); do
                 echo "+++++++++++copy start------------"
-                skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}${name}:${tag}
+                skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tag}
             done
         fi
     done
