@@ -60,7 +60,7 @@ sync_images() {
     TOTAL_NUMS=$(echo -e ${IMAGES} | tr ' ' '\n' | wc -l)
     for image in ${IMAGES}; do
         echo ${image}
-        if skopeo inspect ${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
             echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
             break
         fi
