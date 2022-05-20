@@ -37,14 +37,17 @@ diff_images() {
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
     echo "--ok2--"
     if [ -s ${SCRIPTS_PATH}/images.list ];then
-        echo "---ok3---"
+        echo "---update sync---"
         LIST="$(cat ${SCRIPTS_PATH}/images.list | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
     fi
 }
 
 skopeo_copy() {
+    echo "---starting copy---"
     if skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2; then
+        echo "---copy---"
+       
         echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
         echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
         return 0
