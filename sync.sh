@@ -30,11 +30,7 @@ diff_images() {
     CURRENT_COMMIT=$(git log -1 upstream/master --format='%H')
     echo ${CURRENT_COMMIT}
     echo "--ok1--"
-    git tag -l
-    echo "-------------"
-    git tag -l | egrep --only-matching -E '^([[:digit:]]{12})'
-    LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1)
-    echo ${LAST_TAG}
+    LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1  || true )
     echo "--ok1-1--"
     : ${LAST_TAG:=$(git log upstream/master --format='%H' | tail -n1)}
     echo "--ok2--"
