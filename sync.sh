@@ -31,6 +31,7 @@ diff_images() {
     echo ${CURRENT_COMMIT}
     echo "--ok1--"
     git tag -l
+    echo "-------------"
     git tag -l | egrep --only-matching -E '^([[:digit:]]{12})'
     LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1)
     echo ${LAST_TAG}
