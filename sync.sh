@@ -13,7 +13,7 @@ REPO_PATH=$2
 : ${REPO_PATH:=${PWD}}
 
 NEW_TAG=$(date +"%Y%m%d%H%M")
-TMP_DIR="/tmp/docker-library"
+TMP_DIR="/tmp/docker-library2"
 SCRIPTS_PATH=$(cd $(dirname "${BASH_SOURCE}") && pwd -P)
 UPSTREAM="https://github.com/docker-library/official-images"
 
