@@ -28,11 +28,14 @@ diff_images() {
     git fetch --tag
     git fetch --all
     CURRENT_COMMIT=$(git log -1 upstream/master --format='%H')
+    echo "--ok1--"
     LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1)
     : ${LAST_TAG:=$(git log upstream/master --format='%H' | tail -n1)}
+    echo "--ok2--"
     IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
     --diff-filter=AM ${LAST_TAG} ${CURRENT_COMMIT} library | xargs -L1 -I {} sed "s|^|{}:|g" {} \
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
+    echo "--ok3--"
     if [ -s ${SCRIPTS_PATH}/images.list ];then
         LIST="$(cat ${SCRIPTS_PATH}/images.list | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
