@@ -29,15 +29,13 @@ diff_images() {
     git fetch --all
     CURRENT_COMMIT=$(git log -1 upstream/master --format='%H')
     echo ${CURRENT_COMMIT}
-    echo "--ok1--"
     LAST_TAG=$(git tag -l | egrep --only-matching -E '^([[:digit:]]{12})' | sort -nr | head -n1  || true )
-    echo "--ok1-1--"
+    echo "--ok1--"
     : ${LAST_TAG:=$(git log upstream/master --format='%H' | tail -n1)}
-    echo "--ok2--"
     IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
     --diff-filter=AM ${LAST_TAG} ${CURRENT_COMMIT} library | xargs -L1 -I {} sed "s|^|{}:|g" {} \
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
-    echo "--ok3--"
+    echo "--ok2--"
     if [ -s ${SCRIPTS_PATH}/images.list ];then
         LIST="$(cat ${SCRIPTS_PATH}/images.list | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
@@ -45,11 +43,9 @@ diff_images() {
 }
 
 skopeo_copy() {
-    if skopeo copy  --insecure-policy --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2; then
+    if skopeo copy  --insecure-policy --command-timeout 120  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2; then
         echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
-        echo "----copy 01---"
         echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
-        echo "----copy 02---"
         return 0
     else
         echo -e "$RED_COL Sync $1 failed $NORMAL_CO"
@@ -62,10 +58,12 @@ sync_images() {
     IFS=$'\n'
     CURRENT_NUM=0
     TOTAL_NUMS=$(echo -e ${IMAGES} | tr ' ' '\n' | wc -l)
-    echo "----sync 01---"
     for image in ${IMAGES}; do
-        echo "----sync 02---"
         echo ${image}
+        if skopeo inspect ${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
+            break
+        fi
         let CURRENT_NUM=${CURRENT_NUM}+1
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
@@ -74,7 +72,6 @@ sync_images() {
         echo ${name}:${tags}
         echo "--tags end --"
         if skopeo_copy docker.io/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tags}; then
-            echo "----sync 03---"
             for tag in $(echo ${image} | cut -d ':' -f2 | tr ',' '\n'); do
                 echo "+++++++++++copy start------------"
                 skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tag}
