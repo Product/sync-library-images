@@ -37,6 +37,7 @@ diff_images() {
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
     echo "--ok2--"
     if [ -s ${SCRIPTS_PATH}/images.list ];then
+        echo "---ok3---"
         LIST="$(cat ${SCRIPTS_PATH}/images.list | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
     fi
