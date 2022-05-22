@@ -37,9 +37,9 @@ diff_images() {
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
     echo "--ok2--"
     echo ${IMAGES}
-    if [ -s ${SCRIPTS_PATH}/tags_list.log ];then
+    if [ -s ${SCRIPTS_PATH}/tools/tags_list.log ];then
         echo "---update sync---"
-        LIST="$(cat ${SCRIPTS_PATH}/tags_list.log | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
+        LIST="$(cat ${SCRIPTS_PATH}/tools/tags_list.log | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
         echo ${IMAGES}
     fi
