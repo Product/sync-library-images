@@ -15,6 +15,7 @@ REPO_PATH=$2
 NEW_TAG=$(date +"%Y%m%d%H%M")
 TMP_DIR="/tmp/docker-library2"
 SCRIPTS_PATH=$(cd $(dirname "${BASH_SOURCE}") && pwd -P)
+echo ${SCRIPTS_PATH}
 UPSTREAM="https://github.com/docker-library/official-images"
 
 SKIP_TAG="windowsservercore"
@@ -83,11 +84,17 @@ sync_images() {
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
-        
-        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
-            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
-           continue
+        if [ -f "${SCRIPTS_PATH}/tools/tags_list.log" ];then
+            echo "11111"
+            
         fi
+        if [ -f "${SCRIPTS_PATH}/tags_list.log" ];then
+            echo "22222"
+        fi
+        #if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+        #    echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
+        #   continue
+        #fi
         echo "--tags start--"
         echo ${name}:${tags}
         echo "--tags end --"
