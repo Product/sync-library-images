@@ -59,7 +59,6 @@ skopeo_copy() {
     done
     echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
     echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
-    return 0
 
     if [ ${TEST} -ne ""]; then
         echo -e "$RED_COL Sync $1 failed $NORMAL_CO"
