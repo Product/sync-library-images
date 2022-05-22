@@ -50,17 +50,19 @@ skopeo_copy() {
     FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
     RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
     TEST="$(echo -e ${FLAG} | grep 'variant')"
-
-    while [ ${RESULT} -ne "" ];do
-        echo "++++the server reset by peer ,waiting retry after 5 seconds++++"
-        sleep 5
-        FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
-        RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
-    done
-    echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
-    echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
-
-    if [ ${TEST} -ne ""]; then
+    if [ ${RESULT} -ne "" ]; then
+        
+        while [ ${RESULT} -ne "" ];do
+            echo "++++the server reset by peer ,waiting retry after 5 seconds++++"
+            sleep 5
+            FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
+            RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
+        done
+        echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
+        echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
+        return 0
+    
+    else 
         echo -e "$RED_COL Sync $1 failed $NORMAL_CO"
         echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-failed.list
         return 1
