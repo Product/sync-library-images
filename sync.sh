@@ -53,6 +53,7 @@ skopeo_copy() {
 
     FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
     RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
+    echo ${RESULT}
     TEST="$(echo -e ${FLAG} | grep 'variant')"
     if [ -n "${RESULT}" ]; then
         
