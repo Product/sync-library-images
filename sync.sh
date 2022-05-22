@@ -54,9 +54,9 @@ skopeo_copy() {
     FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
     RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
     TEST="$(echo -e ${FLAG} | grep 'variant')"
-    if [ -z "${RESULT}" ]; then
+    if [ -n "${RESULT}" ]; then
         
-        while [ -z "${RESULT}" ];do
+        while [ -n "${RESULT}" ];do
             echo "++++the server reset by peer ,waiting retry after 5 seconds++++"
             sleep 5
             FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
