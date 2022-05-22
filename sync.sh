@@ -52,6 +52,7 @@ skopeo_copy() {
     echo "---starting copy- from $1 --to $2"
 
     FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
+    echo ${FLAG}
     echo "-----${FLAG}-----"
     RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
     echo ${RESULT}
