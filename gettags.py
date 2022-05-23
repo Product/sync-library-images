@@ -40,6 +40,7 @@ class Harbor_get_artifacts(object):
 
     def get_reps(self):
         self.reps = requests.get(self.harbor_rep_url_page,auth=self.auth).json()
+        print(self.reps)
         reps=[]
         for rep in self.reps:
             rep = rep['name'].replace(self.project_name,'')
