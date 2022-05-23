@@ -38,9 +38,9 @@ diff_images() {
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
     echo "--ok2--"
     echo ${IMAGES}
-    if [ -s ${SCRIPTS_PATH}/tools/tags_list.log ];then
+    if [ -s ${SCRIPTS_PATH}/images.list ];then
         echo "---update sync---"
-        LIST="$(cat ${SCRIPTS_PATH}/tools/tags_list.log | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
+        LIST="$(cat ${SCRIPTS_PATH}/images.list | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
         echo ${IMAGES}
     fi
@@ -52,8 +52,7 @@ skopeo_copy() {
     echo "---starting copy- from $1 --to $2"
     echo "+++++++++++++++++"
     FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2 || true)"
-    echo $FLAG
-    echo "-----${FLAG}-----"
+    echo "-----+ ${FLAG} +-----"
     RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
     echo ${RESULT}
     TEST="$(echo -e ${FLAG} | grep 'variant')"
@@ -87,17 +86,13 @@ sync_images() {
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
-        if [ -f "${SCRIPTS_PATH}/tools/tags_list.log" ];then
+        if [ -f "${SCRIPTS_PATH}/images.list" ];then
             echo "11111"
-            
         fi
-        if [ -f "${SCRIPTS_PATH}/tags_list.log" ];then
-            echo "22222"
+        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
+           continue
         fi
-        #if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
-        #    echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
-        #   continue
-        #fi
         echo "--tags start--"
         echo ${name}:${tags}
         echo "--tags end --"
