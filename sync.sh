@@ -13,7 +13,7 @@ REPO_PATH=$2
 : ${REPO_PATH:=${PWD}}
 
 NEW_TAG=$(date +"%Y%m%d%H%M")
-TMP_DIR="/tmp/docker-library2"
+TMP_DIR="/tmp/docker-library"
 SCRIPTS_PATH=$(cd $(dirname "${BASH_SOURCE}") && pwd -P)
 echo ${SCRIPTS_PATH}
 UPSTREAM="https://github.com/docker-library/official-images"
@@ -37,12 +37,12 @@ diff_images() {
     --diff-filter=AM ${LAST_TAG} ${CURRENT_COMMIT} library | xargs -L1 -I {} sed "s|^|{}:|g" {} \
     | sed -n "s| ||g;s|library/||g;s|:Tags:|:|p;s|:SharedTags:|:|p" | sort -u | sed "/${SKIP_TAG}/d")
     echo "--ok2--"
-    echo ${IMAGES}
+    #echo ${IMAGES}
     if [ -s ${SCRIPTS_PATH}/images.list ];then
         echo "---update sync---"
         LIST="$(cat ${SCRIPTS_PATH}/images.list | sed 's|^|\^|g' | tr '\n' '|' | sed 's/|$//')"
         IMAGES=$(echo -e ${IMAGES} | tr ' ' '\n' | grep -E "${LIST}")
-        echo ${IMAGES}
+        #echo ${IMAGES}
     fi
     
 }
@@ -80,16 +80,16 @@ sync_images() {
     CURRENT_NUM=0
     TOTAL_NUMS=$(echo -e ${IMAGES} | tr ' ' '\n' | wc -l)
     for image in ${IMAGES}; do
-        echo ${image}
+        #echo ${IMAGES}
 
         let CURRENT_NUM=${CURRENT_NUM}+1
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
-        if [ -f "${SCRIPTS_PATH}/tags.list" ];then
+        if [ -e /tmp/docker-library/tags.list ];then
             echo "11111"
         fi
-        if [ -f "${SCRIPTS_PATH}/tools/tags.list" ];then
+        if [ -e "${TMP_DIR}/tags.list" ];then
             echo "222"
         fi
         if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
