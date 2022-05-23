@@ -117,7 +117,7 @@ gen_repo_tag() {
     fi
 }
 
-diff_images
-sync_images
-gen_repo_tag
+#diff_images
+#sync_images
+#gen_repo_tag
 
