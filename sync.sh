@@ -86,16 +86,15 @@ sync_images() {
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
-        if [ -e /tmp/docker-library/tags.list ];then
-            echo "11111"
+        
+        if grep "${name}:${tags}" ${SCRIPTS_PATH}/test.txt; then
+            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- " 
+            continue
         fi
-        if [ -e "${TMP_DIR}/tags.list" ];then
-            echo "222"
-        fi
-        if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
-            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
-           continue
-        fi
+        #if skopeo inspect docker://${REGISTRY_LIBRARY}/${name}:${tags} --raw | jq '.' | grep "schemaVersion";then
+        #    echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- "
+        #   continue
+        #fi
         echo "--tags start--"
         echo ${name}:${tags}
         echo "--tags end --"
