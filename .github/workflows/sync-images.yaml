@@ -38,8 +38,8 @@ jobs:
           REGISTRY_PROJECT: ${{ secrets.REGISTRY_PROJECT }}
         run: |
           sudo skopeo login ${REGISTRY_DOMAIN} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD} --tls-verify=false
-          sudo python ${GITHUB_WORKSPACE}/tools/gettags.py -d ${REGISTRY_DOMAIN} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD} -project ${REGISTRY_PROJECT} -o  /tmp/tags.list && sudo cat /tmp/tags.list
+          sudo python ${GITHUB_WORKSPACE}/tools/gettags.py -d ${REGISTRY_DOMAIN} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD} -project ${REGISTRY_PROJECT} -o  /tmp/tags.list 
           sudo bash ${GITHUB_WORKSPACE}/tools/sync.sh ${REGISTRY_DOMAIN} ${GITHUB_WORKSPACE}/official-images
       # for debug action runner
-      #- name: Setup tmate session
-      #  uses: mxschmitt/action-tmate@v1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v1
