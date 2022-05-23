@@ -50,20 +50,8 @@ diff_images() {
 
 skopeo_copy() {
     echo "---starting copy- from $1 --to $2"
-    echo "+++++++++++++++++"
-    FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false  docker://$1 docker://$2 || true)"
-    echo "-----+ ${FLAG} +-----"
-    RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
-    echo ${RESULT}
-    TEST="$(echo -e ${FLAG} | grep 'variant')"
-    if [ -n "${RESULT}" ]; then
-        
-        while [ -n "${RESULT}" ];do
-            echo "++++the server reset by peer ,waiting retry after 5 seconds++++"
-            sleep 5
-            FLAG="$(skopeo copy  --insecure-policy --command-timeout 120s  --src-tls-verify=false --dest-tls-verify=false  docker://$1 docker://$2 || true)"
-            RESULT="$(echo -e ${FLAG} | grep 'connection reset by peer')"
-        done
+    
+    if skopeo copy  --insecure-policy --command-timeout 120s --retry-times 5 --src-tls-verify=false --dest-tls-verify=false  docker://$1 docker://$2; then
         echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
         echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
         return 0
@@ -86,10 +74,6 @@ sync_images() {
         echo -e "$YELLOW_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} $NORMAL_COL"
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2 | cut -d ',' -f1)"
-        
-        if [ -s ${SCRIPTS_PATH}/test.txt ];then
-            echo "44444"
-        fi
         
         if grep "${name}:${tags}" ${SCRIPTS_PATH}/test.txt; then
             echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- " 
