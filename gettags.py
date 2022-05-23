@@ -17,6 +17,7 @@ class Harbor_get_artifacts(object):
         self.schema = schema
         self.harbor_domain = harbor_domain
         self.username = username
+        
         self.password = password
         self.project_name = project_name
         self.output_name = output_name
@@ -25,6 +26,7 @@ class Harbor_get_artifacts(object):
         self.harbor_rep_url_page = self.harbor_rep_url+ "?page=1&page_size=100"
 
         self.auth = HTTPBasicAuth(self.username,self.password)
+        print(self.harbor_rep_url_page,self.username)
         self.result()
 
     def write_file(self,content):
