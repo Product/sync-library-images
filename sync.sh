@@ -51,7 +51,7 @@ diff_images() {
 skopeo_copy() {
     echo "---starting copy- from $1 --to $2"
     
-    if skopeo copy  --insecure-policy --command-timeout 120s --retry-times 5 --src-tls-verify=false --dest-tls-verify=false  docker://$1 docker://$2; then
+    if skopeo copy  --insecure-policy --command-timeout 120s --retry-times 5 --src-tls-verify=false --dest-tls-verify=false -q docker://$1 docker://$2; then
         echo -e "$GREEN_COL Sync $1 successful $NORMAL_COL"
         echo ${name}:${tags} >> ${TMP_DIR}/${NEW_TAG}-successful.list
         return 0
