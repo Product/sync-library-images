@@ -41,5 +41,5 @@ jobs:
           #sudo bash ${GITHUB_WORKSPACE}/tools/gettags.sh ${REGISTRY_DOMAIN}  ${REGISTRY_USER}  ${REGISTRY_PASSWORD}  ${REGISTRY_PROJECT}  ${GITHUB_WORKSPACE}/tools/tags.list
           sudo bash ${GITHUB_WORKSPACE}/tools/sync.sh ${REGISTRY_DOMAIN} ${GITHUB_WORKSPACE}/official-images
       # for debug action runner
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v1
+      #- name: Setup tmate session
+      #  uses: mxschmitt/action-tmate@v1
