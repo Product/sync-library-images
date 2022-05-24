@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - '.gtihub/workflows/sync-images.yaml'
+      - 'test.txt'
   schedule:
     - cron: "0 0 */2 * *"
 
