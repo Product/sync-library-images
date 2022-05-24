@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - '.gtihub/workflows/sync-images.yaml'
   schedule:
     - cron: "0 0 */2 * *"
 
