@@ -45,6 +45,7 @@ class Harbor_get_artifacts(object):
         reps = []
         while flag:
             self.reps = requests.get(self.harbor_rep_url_page+str(page),auth=self.auth).json()
+            print(reps.content)
             if len(self.reps) != 0:
                 for rep in self.reps:
                     rep = rep['name'].replace(self.project_name,'')
