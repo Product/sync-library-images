@@ -7,13 +7,8 @@ import json
 import argparse
 
 
-
-class Harbor_get_artifacts(object):
+class HarborGetArtifacts(object):
     def __init__(self,schema, harbor_domain, username, password,project_name,output_name):
-        self.rep_name = None
-        self.tags = None
-        self.reps = None
-        self.handle = None
         self.schema = schema
         self.harbor_domain = harbor_domain
         self.username = username
@@ -29,25 +24,25 @@ class Harbor_get_artifacts(object):
 
     def write_file(self,content):
 
-        self.handle = open(self.output_name, "w")
+        handle = open(self.output_name, "w")
         for c in content:
-            self.handle.write(c + '\n')
-        self.handle.close()
+            handle.write(c + '\n')
+        handle.close()
 
     def result(self):
-        self.reps = self.get_reps()
-        self.tags = self.get_artifacts(self.reps)
-        self.write_file(self.tags)
+        reps = self.get_reps()
+        tags = self.get_artifacts(reps)
+        self.write_file(tags)
 
     def get_reps(self):
         page = 1
         flag = True
         reps = []
         while flag:
-            self.reps = requests.get(self.harbor_rep_url_page+str(page),auth=self.auth).json()
-            print(self.reps)
-            if len(self.reps) != 0:
-                for rep in self.reps:
+            r_reps = requests.get(self.harbor_rep_url_page+str(page),auth=self.auth).json()
+            #print(r_reps)
+            if len(r_reps) != 0:
+                for rep in r_reps:
                     rep = rep['name'].replace(self.project_name,'')
                     reps.append(rep)
                 page += 1
@@ -58,10 +53,9 @@ class Harbor_get_artifacts(object):
 
 
     def get_artifacts(self,rep_name):
-        self.rep_name = rep_name
-        #self.rep_name=['/neo4j']
+        #rep_name=['/neo4j']
         tags=[]
-        for rep in self.rep_name:
+        for rep in rep_name:
             page = 1
             flag = True
             self.harbor_tags_url = self.harbor_rep_url + rep + '/artifacts?page_size=100' \
@@ -72,9 +66,9 @@ class Harbor_get_artifacts(object):
             #print(self.harbor_tags_url)
             rep = rep.replace("/", "")
             while flag:
-                self.tags = requests.get(self.harbor_tags_url+str(page), auth=self.auth).json()
-                if len(self.tags) != 0:
-                    for tag_list in self.tags:
+                all_tags = requests.get(self.harbor_tags_url+str(page), auth=self.auth).json()
+                if len(all_tags) != 0:
+                    for tag_list in all_tags:
                         for tag in tag_list['tags']:
                             tag = rep+":"+tag['name']
                             print(tag)
@@ -94,6 +88,6 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", help="output logs",default='./output.log')
     args = parser.parse_args()
     try:
-        result = Harbor_get_artifacts(schema="https",harbor_domain=args.domain,username=args.username,password=args.password,project_name=args.project,output_name=args.output)
+        result = HarborGetArtifacts(schema="https", harbor_domain=args.domain, username=args.username, password=args.password, project_name=args.project, output_name=args.output)
     except Exception as e:
         print(e)
