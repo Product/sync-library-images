@@ -27,6 +27,7 @@ class HarborGetArtifacts(object):
         handle = open(self.output_name, "w")
         for c in content:
             handle.write(c + '\n')
+        print("---write to successful , "+str(len(content))+" lines have been writen.")
         handle.close()
 
     def result(self):
@@ -71,7 +72,7 @@ class HarborGetArtifacts(object):
                     for tag_list in all_tags:
                         for tag in tag_list['tags']:
                             tag = rep+":"+tag['name']
-                            print(tag)
+                            #print(tag)
                             tags.append(tag)
                     page += 1
                     #time.sleep(0.1)
