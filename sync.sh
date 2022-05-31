@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+#set -eo pipefail
 
 GREEN_COL="\\033[32;1m"
 RED_COL="\\033[1;31m"
