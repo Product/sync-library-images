@@ -47,7 +47,7 @@ sync_images() {
         echo "--tags end --"
         if skopeo_copy docker.io/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tags}; then
             echo "+++++++++++copy start------------"
-            skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tag}
+            skopeo_copy ${REGISTRY_LIBRARY}/${name}:${tags} ${REGISTRY_LIBRARY}/${name}:${tags}
         fi
     done
     unset IFS
