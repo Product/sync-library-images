@@ -26,10 +26,10 @@ jobs:
         #  repository: ${{ github.repository_owner }}/official-images
         #  path: official-images
 
-      - name: Config git user and user.email
-        run: |
-          cd ${GITHUB_WORKSPACE}/official-images && git config user.name github-actions
-          cd ${GITHUB_WORKSPACE}/official-images && git config user.email github-actions@github.com
+      #- name: Config git user and user.email
+      #  run: |
+       #   cd ${GITHUB_WORKSPACE}/official-images && git config user.name github-actions
+       #   cd ${GITHUB_WORKSPACE}/official-images && git config user.email github-actions@github.com
 
       - name: Sync images to registry
         shell: bash
