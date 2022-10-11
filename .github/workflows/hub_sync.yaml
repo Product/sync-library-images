@@ -1,0 +1,48 @@
+name: sync-images
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'hub_images.txt'
+  schedule:
+    - cron: "0 0 */2 * *"
+
+jobs:
+  sync-images:
+    runs-on: ubuntu-20.04
+    steps:
+      #- name: Clone repository
+      #  uses: actions/checkout@v2
+       # with:
+       #   path: tools
+
+      #- name: Checkout official-images repo
+       # uses: actions/checkout@v2
+       # with:
+        #  token: ${{ secrets.TOKEN_GITHUB }}
+        #  fetch-depth: 0
+        #  repository: ${{ github.repository_owner }}/official-images
+        #  path: official-images
+
+      #- name: Config git user and user.email
+       # run: |
+        #  cd ${GITHUB_WORKSPACE}/official-images && git config user.name github-actions
+        #  cd ${GITHUB_WORKSPACE}/official-images && git config user.email github-actions@github.com
+
+      - name: Sync images to registry
+        shell: bash
+        env:
+          REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
+          REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          REGISTRY_PROJECT: ${{ secrets.REGISTRY_PROJECT }}
+        run: |
+          sudo skopeo login ${REGISTRY_DOMAIN} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD} --tls-verify=false
+          #sudo bash ${GITHUB_WORKSPACE}/tools/gettags.sh ${REGISTRY_DOMAIN}  ${REGISTRY_USER}  ${REGISTRY_PASSWORD}  ${REGISTRY_PROJECT}  ${GITHUB_WORKSPACE}/tools/test.txt
+          sudo bash ${GITHUB_WORKSPACE}/tools/hubsync.sh ${REGISTRY_DOMAIN}
+      # for debug action runner
+      #- name: Setup tmate session
+      #  uses: mxschmitt/action-tmate@v1
+      
