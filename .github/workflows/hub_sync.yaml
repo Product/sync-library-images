@@ -13,10 +13,10 @@ jobs:
   sync-images:
     runs-on: ubuntu-20.04
     steps:
-      #- name: Clone repository
-      #  uses: actions/checkout@v2
-       # with:
-       #   path: tools
+      - name: Clone repository
+        uses: actions/checkout@v2
+        with:
+          path: tools
 
       #- name: Checkout official-images repo
        # uses: actions/checkout@v2
@@ -26,10 +26,10 @@ jobs:
         #  repository: ${{ github.repository_owner }}/official-images
         #  path: official-images
 
-      #- name: Config git user and user.email
-       # run: |
-        #  cd ${GITHUB_WORKSPACE}/official-images && git config user.name github-actions
-        #  cd ${GITHUB_WORKSPACE}/official-images && git config user.email github-actions@github.com
+      - name: Config git user and user.email
+        run: |
+          cd ${GITHUB_WORKSPACE}/official-images && git config user.name github-actions
+          cd ${GITHUB_WORKSPACE}/official-images && git config user.email github-actions@github.com
 
       - name: Sync images to registry
         shell: bash
