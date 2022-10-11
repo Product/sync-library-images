@@ -38,7 +38,7 @@ skopeo_copy() {
 sync_images() {
     IFS=$'\n'
     CURRENT_NUM=0
-    IMAGES="$(cat ${SCRIPTS_PATH}/hub_images.txt})"
+    IMAGES="$(cat ${SCRIPTS_PATH}/hub_images.txt)"
     for image in ${IMAGES}; do
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2)"
