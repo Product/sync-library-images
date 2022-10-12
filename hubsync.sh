@@ -42,6 +42,10 @@ sync_images() {
     for image in ${IMAGES}; do
         name="$(echo ${image} | cut -d ':' -f1)"
         tags="$(echo ${image} | cut -d ':' -f2)"
+        if grep "${name}:${tags}" ${SCRIPTS_PATH}/hub_synced.txt; then
+            echo "---the images  ${REGISTRY_LIBRARY}/${name}:${tags} has exists , skipping --- " 
+            continue
+        fi
         echo "--tags start--"
         echo ${name}:${tags}
         echo "--tags end --"
