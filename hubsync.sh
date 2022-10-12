@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+#set -eo pipefail
 
 REGISTRY_DOMAIN=$1
 : ${REGISTRY_DOMAIN:="registry.local"}
