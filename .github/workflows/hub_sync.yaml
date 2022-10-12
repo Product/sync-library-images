@@ -1,4 +1,4 @@
-name: sync-images
+name: sync-hub-images
 
 on:
   push:
