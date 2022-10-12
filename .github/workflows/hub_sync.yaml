@@ -37,10 +37,10 @@ jobs:
           REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
           REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-          REGISTRY_PROJECT: ${{ secrets.REGISTRY_PROJECT }}
+          REGISTRY_PROJECT: ${{ secrets.REGISTRY_PROJECT_HUBPROJECT }}
         run: |
           sudo skopeo login ${REGISTRY_DOMAIN} -u ${REGISTRY_USER} -p ${REGISTRY_PASSWORD} --tls-verify=false
-          sudo bash ${GITHUB_WORKSPACE}/tools/gettags.sh ${REGISTRY_DOMAIN}  ${REGISTRY_USER}  ${REGISTRY_PASSWORD}  ${REGISTRY_PROJECT}  ${GITHUB_WORKSPACE}/tools/hub.txt
+          sudo bash ${GITHUB_WORKSPACE}/tools/gettags.sh ${REGISTRY_DOMAIN}  ${REGISTRY_USER}  ${REGISTRY_PASSWORD}  ${REGISTRY_PROJECT_HUBPROJECT}  ${GITHUB_WORKSPACE}/tools/hub.txt
           sudo bash ${GITHUB_WORKSPACE}/tools/hubsync.sh ${REGISTRY_DOMAIN}
       # for debug action runner
       #- name: Setup tmate session
