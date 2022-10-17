@@ -7,7 +7,7 @@ on:
     paths:
       - 'hub_images.txt'
   schedule:
-    - cron: "0 0 */2 * *"
+    - cron: "0 */6 * * *"
 
 jobs:
   sync-images:
